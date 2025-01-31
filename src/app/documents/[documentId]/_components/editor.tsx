@@ -1,16 +1,25 @@
 "use client";
 
+import { Color } from "@tiptap/extension-color";
+import FontFamily from "@tiptap/extension-font-family";
+import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
 import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
+import TextAlign from "@tiptap/extension-text-align";
+import TextStyle from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import ImageResize from "tiptap-extension-resize-image";
 
+import { FontSize } from "@/extensions/font-size";
+import { LineHeight } from "@/extensions/line-height";
 import { useEditorStore } from "@/store/use-editor-store";
 
 export const Editor = () => {
@@ -50,6 +59,21 @@ export const Editor = () => {
     },
     extensions: [
       StarterKit,
+      Color,
+      FontFamily,
+      FontSize,
+      Highlight.configure({ multicolor: true }),
+      LineHeight.configure({
+        types: ["heading", "paragraph"],
+        defaultLineHeight: "normal",
+      }),
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+        defaultProtocol: "https",
+      }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      TextStyle,
       Image,
       ImageResize,
       Table.configure({ resizable: true }),
@@ -58,6 +82,7 @@ export const Editor = () => {
       TableRow,
       TaskItem.configure({ nested: true }),
       TaskList,
+      Underline,
     ],
     content: `
         <table>

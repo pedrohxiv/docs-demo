@@ -8,6 +8,7 @@ const font = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Docs",
+  icons: { icon: "/logo.svg" },
 };
 
 interface Props {

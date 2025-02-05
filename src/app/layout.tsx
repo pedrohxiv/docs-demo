@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { cn } from "@/lib/utils";
 import "@/styles/global.css";
@@ -18,7 +19,9 @@ interface Props {
 const RootLayout = ({ children }: Props) => {
   return (
     <html>
-      <body className={cn(font.className, "antialiased")}>{children}</body>
+      <body className={cn(font.className, "antialiased")}>
+        <NuqsAdapter>{children}</NuqsAdapter>
+      </body>
     </html>
   );
 };

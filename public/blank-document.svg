@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 517">
+  <!-- White Background -->
+  <rect width="400" height="517" fill="white"/>
+  
+  <!-- Centered Plus Shape with Google Colors -->
+  <g transform="translate(100, 158.5) scale(2)">
+    <!-- Top (Red) -->
+    <path d="M20 45 h25 v-25 h10 v39" fill="#EA4335"/>
+    <!-- Right (Blue) -->
+    <path d="M55 45 h25 v10 h-25 v25 h-10 v-25" fill="#4285F4"/>
+    <!-- Bottom (Green) -->
+    <path d="M55 55 v25 h-10 v-25 h25" fill="#34A853"/>
+    <!-- Left (Yellow) -->
+    <path d="M45 55 h-25 v-10 h25 v25" fill="#FBBC05"/>
+  </g>
+</svg>

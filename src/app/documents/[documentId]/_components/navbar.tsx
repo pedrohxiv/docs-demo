@@ -1,13 +1,11 @@
 "use client";
 
 import {
-  AccessibilityIcon,
   BoldIcon,
   DownloadIcon,
   FilePenIcon,
   FilePlusIcon,
   FilesIcon,
-  FolderIcon,
   ItalicIcon,
   MessageSquareTextIcon,
   PrinterIcon,
@@ -15,7 +13,6 @@ import {
   RemoveFormattingIcon,
   StrikethroughIcon,
   TableIcon,
-  TextIcon,
   TrashIcon,
   UnderlineIcon,
   Undo2Icon,
@@ -35,10 +32,74 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import { useEditorStore } from "@/store/use-editor-store";
 
 import { DocumentInput } from "./document-input";
 
 export const Navbar = () => {
+  const { editor } = useEditorStore();
+
+  const insertTable = ({ cols, rows }: { rows: number; cols: number }) => {
+    editor
+      ?.chain()
+      .focus()
+      .insertTable({ cols, rows, withHeaderRow: false })
+      .run();
+  };
+
+  const onDownload = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = filename;
+
+    a.click();
+  };
+
+  const handleDownloadJSON = () => {
+    if (!editor) {
+      return;
+    }
+
+    const content = editor.getJSON();
+
+    const blob = new Blob([JSON.stringify(content)], {
+      type: "application/json",
+    });
+
+    onDownload(blob, `document.json`);
+  };
+
+  const handleDownloadHTML = () => {
+    if (!editor) {
+      return;
+    }
+
+    const content = editor.getHTML();
+
+    const blob = new Blob([content], {
+      type: "text/html",
+    });
+
+    onDownload(blob, `document.html`);
+  };
+
+  const handleDownloadText = () => {
+    if (!editor) {
+      return;
+    }
+
+    const content = editor.getText();
+
+    const blob = new Blob([content], {
+      type: "text/plain",
+    });
+
+    onDownload(blob, `document.txt`);
+  };
+
   return (
     <nav className="flex items-center justify-between">
       <div className="flex gap-2 items-center">
@@ -57,10 +118,6 @@ export const Navbar = () => {
                     New Document
                   </MenubarItem>
                   <MenubarItem>
-                    <FolderIcon className="size-4 mr-2" />
-                    Open<MenubarShortcut>Ctrl+O</MenubarShortcut>
-                  </MenubarItem>
-                  <MenubarItem>
                     <FilesIcon className="size-4 mr-2" />
                     Make a copy
                   </MenubarItem>
@@ -71,10 +128,18 @@ export const Navbar = () => {
                       Download
                     </MenubarSubTrigger>
                     <MenubarSubContent>
-                      <MenubarItem>JSON File (.json)</MenubarItem>
-                      <MenubarItem>Web Page (.html)</MenubarItem>
-                      <MenubarItem>PDF Document (.pdf)</MenubarItem>
-                      <MenubarItem>Plain Text (.txt)</MenubarItem>
+                      <MenubarItem onClick={handleDownloadJSON}>
+                        JSON File (.json)
+                      </MenubarItem>
+                      <MenubarItem onClick={handleDownloadHTML}>
+                        Web Page (.html)
+                      </MenubarItem>
+                      <MenubarItem onClick={() => window.print()}>
+                        PDF Document (.pdf)
+                      </MenubarItem>
+                      <MenubarItem onClick={handleDownloadText}>
+                        Plain Text (.txt)
+                      </MenubarItem>
                     </MenubarSubContent>
                   </MenubarSub>
                   <MenubarSeparator />
@@ -96,11 +161,15 @@ export const Navbar = () => {
               <MenubarMenu>
                 <MenubarTrigger>Edit</MenubarTrigger>
                 <MenubarContent className="print:hidden">
-                  <MenubarItem>
+                  <MenubarItem
+                    onClick={() => editor?.chain().focus().undo().run()}
+                  >
                     <Undo2Icon className="size-4 mr-2" />
                     Undo<MenubarShortcut>Ctrl+Z</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem>
+                  <MenubarItem
+                    onClick={() => editor?.chain().focus().redo().run()}
+                  >
                     <Redo2Icon className="size-4 mr-2" />
                     Redo<MenubarShortcut>Ctrl+Y</MenubarShortcut>
                   </MenubarItem>
@@ -124,10 +193,26 @@ export const Navbar = () => {
                       Table
                     </MenubarSubTrigger>
                     <MenubarSubContent>
-                      <MenubarItem>1 x 1</MenubarItem>
-                      <MenubarItem>2 x 2</MenubarItem>
-                      <MenubarItem>3 x 3</MenubarItem>
-                      <MenubarItem>4 x 4</MenubarItem>
+                      <MenubarItem
+                        onClick={() => insertTable({ cols: 1, rows: 1 })}
+                      >
+                        1 x 1
+                      </MenubarItem>
+                      <MenubarItem
+                        onClick={() => insertTable({ cols: 2, rows: 2 })}
+                      >
+                        2 x 2
+                      </MenubarItem>
+                      <MenubarItem
+                        onClick={() => insertTable({ cols: 3, rows: 3 })}
+                      >
+                        3 x 3
+                      </MenubarItem>
+                      <MenubarItem
+                        onClick={() => insertTable({ cols: 4, rows: 4 })}
+                      >
+                        4 x 4
+                      </MenubarItem>
                     </MenubarSubContent>
                   </MenubarSub>
                 </MenubarContent>
@@ -137,31 +222,51 @@ export const Navbar = () => {
                 <MenubarContent className="print:hidden">
                   <MenubarSub>
                     <MenubarSubTrigger>
-                      <TextIcon className="size-4 mr-2" />
+                      <BoldIcon className="size-4 mr-2" />
                       Text
                     </MenubarSubTrigger>
                     <MenubarSubContent>
-                      <MenubarItem>
+                      <MenubarItem
+                        onClick={() =>
+                          editor?.chain().focus().toggleBold().run()
+                        }
+                      >
                         <BoldIcon className="size-4 mr-2" />
                         Bold<MenubarShortcut>Ctrl+B</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem
+                        onClick={() =>
+                          editor?.chain().focus().toggleItalic().run()
+                        }
+                      >
                         <ItalicIcon className="size-4 mr-2" />
                         Italic<MenubarShortcut>Ctrl+I</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem
+                        onClick={() =>
+                          editor?.chain().focus().toggleUnderline().run()
+                        }
+                      >
                         <UnderlineIcon className="size-4 mr-2" />
                         Underline<MenubarShortcut>Ctrl+U</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem>
+                      <MenubarItem
+                        onClick={() =>
+                          editor?.chain().focus().toggleStrike().run()
+                        }
+                      >
                         <StrikethroughIcon className="size-4 mr-2" />
                         Strikethrough&nbsp;&nbsp;
-                        <MenubarShortcut>Alt+Shift+5</MenubarShortcut>
+                        <MenubarShortcut>Ctrl+Shift+S</MenubarShortcut>
                       </MenubarItem>
                     </MenubarSubContent>
                   </MenubarSub>
                   <MenubarSeparator />
-                  <MenubarItem>
+                  <MenubarItem
+                    onClick={() =>
+                      editor?.chain().focus().unsetAllMarks().run()
+                    }
+                  >
                     <RemoveFormattingIcon className="size-4 mr-2" />
                     Clear formatting
                   </MenubarItem>
@@ -169,12 +274,6 @@ export const Navbar = () => {
               </MenubarMenu>
               <MenubarMenu>
                 <MenubarTrigger>Tools</MenubarTrigger>
-                <MenubarContent className="print:hidden">
-                  <MenubarItem>
-                    <AccessibilityIcon className="size-4 mr-2" />
-                    Accessibility
-                  </MenubarItem>
-                </MenubarContent>
               </MenubarMenu>
               <MenubarMenu>
                 <MenubarTrigger>Extensions</MenubarTrigger>

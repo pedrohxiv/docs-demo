@@ -4,7 +4,7 @@ import { usePaginatedQuery } from "convex/react";
 
 import { api } from "@/lib/api";
 
-import { DocumentsTable } from "./_components/documents-table";
+import { DocumentsList } from "./_components/documents-list";
 import { Navbar } from "./_components/navbar";
 import { TemplatesGallery } from "./_components/templates-gallery";
 
@@ -12,7 +12,7 @@ const RootPage = () => {
   const { results, status, loadMore } = usePaginatedQuery(
     api.documents.get,
     {},
-    { initialNumItems: 5 }
+    { initialNumItems: 8 }
   );
 
   return (
@@ -22,7 +22,7 @@ const RootPage = () => {
       </div>
       <div className="mt-16">
         <TemplatesGallery />
-        <DocumentsTable
+        <DocumentsList
           documents={results}
           loadMore={loadMore}
           status={status}

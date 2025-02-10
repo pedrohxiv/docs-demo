@@ -27,11 +27,32 @@ export const create = mutation({
 });
 
 export const get = query({
-  args: { paginationOpts: paginationOptsValidator },
-  handler: async (ctx, args) => {
+  args: {
+    paginationOpts: paginationOptsValidator,
+    search: v.optional(v.string()),
+  },
+  handler: async (ctx, { paginationOpts, search }) => {
+    const user = await ctx.auth.getUserIdentity();
+
+    if (!user) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    if (search) {
+      const documents = await ctx.db
+        .query("documents")
+        .withSearchIndex("search_title", (q) =>
+          q.search("title", search).eq("ownerId", user.subject)
+        )
+        .paginate(paginationOpts);
+
+      return documents;
+    }
+
     const documents = await ctx.db
       .query("documents")
-      .paginate(args.paginationOpts);
+      .withIndex("by_owner_id", (q) => q.eq("ownerId", user.subject))
+      .paginate(paginationOpts);
 
     return documents;
   },

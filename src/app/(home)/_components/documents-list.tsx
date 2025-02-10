@@ -1,6 +1,7 @@
 import { PaginationStatus } from "convex/react";
 import { format } from "date-fns";
 import {
+  ChevronDownIcon,
   ExternalLinkIcon,
   FilePenIcon,
   Grid3X3Icon,
@@ -38,6 +39,35 @@ export const DocumentsList = ({ documents, loadMore, status }: Props) => {
     window.open(`/documents/${id}`, "_blank");
   };
 
+  if (!documents || !documents.length) {
+    return (
+      <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-5">
+        <div className="flex flex-row items-center justify-between">
+          <h3 className="font-medium">Recent Documents</h3>
+          {listType === "list" && (
+            <h3 className="hidden md:block font-medium ml-auto mr-20">
+              Created
+            </h3>
+          )}
+          {listType === "grid" ? (
+            <ListIcon
+              onClick={() => setListType("list")}
+              className="size-6 text-neutral-600 cursor-pointer"
+            />
+          ) : (
+            <Grid3X3Icon
+              onClick={() => setListType("grid")}
+              className="size-6 text-neutral-600 cursor-pointer"
+            />
+          )}
+        </div>
+        <div className="flex items-center justify-center py-10">
+          <p className="text-neutral-500">No documents found!</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-5">
       <div className="flex flex-row items-center justify-between">
@@ -59,7 +89,7 @@ export const DocumentsList = ({ documents, loadMore, status }: Props) => {
       </div>
       {listType === "grid" ? (
         <div className="grid grid-cols-4 gap-6">
-          {documents?.map((document) => (
+          {documents.map((document) => (
             <div
               key={document._id}
               className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5"
@@ -129,7 +159,7 @@ export const DocumentsList = ({ documents, loadMore, status }: Props) => {
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          {documents?.map((document) => (
+          {documents.map((document) => (
             <div
               key={document._id}
               onClick={() => router.push(`/documents/${document._id}`)}
@@ -188,16 +218,18 @@ export const DocumentsList = ({ documents, loadMore, status }: Props) => {
           ))}
         </div>
       )}
-      <div className="flex items-center justify-center">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => loadMore(5)}
-          disabled={status !== "CanLoadMore"}
-        >
-          {status === "CanLoadMore" ? "Load More" : "End of results"}
-        </Button>
-      </div>
+      {status === "CanLoadMore" && (
+        <div className="flex items-center justify-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
+            onClick={() => loadMore(8)}
+          >
+            <ChevronDownIcon className="size-6" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

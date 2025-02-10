@@ -8,6 +8,7 @@ import {
   ListIcon,
   MoreVerticalIcon,
   TrashIcon,
+  UsersIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -99,9 +100,14 @@ export const DocumentsList = ({ documents, loadMore, status }: Props) => {
                 className="bg-[#fafbfd] relative aspect-[3/4] flex flex-col gap-y-2.5 border hover:border-blue-500 rounded-sm cursor-pointer"
               >
                 <div className="absolute bg-white border-t bottom-0 left-0 right-0 h-24 p-4 flex flex-col gap-2">
-                  <p className="text-base font-medium truncate">
-                    {document.title}
-                  </p>
+                  <div className="flex flex-row w-full items-center justify-start gap-2">
+                    <p className="text-base font-medium truncate">
+                      {document.title}
+                    </p>
+                    {document.organizationId && (
+                      <UsersIcon className="size-4 text-blue-500" />
+                    )}
+                  </div>
                   <div className="flex flex-row w-full items-center justify-center">
                     <SiGoogledocs className="size-6 fill-blue-500 mr-2" />
                     <p className="text-neutral-600">
@@ -171,10 +177,15 @@ export const DocumentsList = ({ documents, loadMore, status }: Props) => {
                   {document.title}
                 </p>
               </div>
-              <p className="hidden md:block text-neutral-600 text-sm ml-auto mr-2">
-                Created&nbsp;
-                {format(new Date(document._creationTime), "MMM dd, yyyy")}
-              </p>
+              <div className="hidden md:flex flex-row w-auto items-center ml-auto gap-2 mr-2">
+                {document.organizationId && (
+                  <UsersIcon className="size-4 text-blue-500" />
+                )}
+                <p className="text-neutral-600 text-sm">
+                  Created&nbsp;
+                  {format(new Date(document._creationTime), "MMM dd, yyyy")}
+                </p>
+              </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">

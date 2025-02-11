@@ -537,12 +537,14 @@ const LinkButton = () => {
 };
 
 const CommentButton = () => {
+  const { editor } = useEditorStore();
+
   return (
     <button
-      onClick={() => {}}
+      onClick={() => editor?.chain().focus().addPendingComment().run()}
       className={cn(
         "text-sm h-7 min-w-7 flex items-center justify-center rounded-sm hover:bg-neutral-200/80",
-        { "bg-neutral-200/80": false }
+        { "bg-neutral-200/80": editor?.isActive("liveblocksCommentMark") }
       )}
     >
       <MessageSquarePlusIcon className="size-4" />

@@ -8,6 +8,7 @@ import {
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { getDocuments } from "@/actions/get-documents";
 import { getUsers } from "@/actions/get-users";
 import { User } from "@/lib/types";
 
@@ -35,7 +36,18 @@ export const Room = ({ children }: Props) => {
 
   return (
     <LiveblocksProvider
-      authEndpoint="/api/liveblocks-auth"
+      authEndpoint={async () => {
+        const endpoint = "/api/liveblocks-auth";
+
+        const room = params.documentId as string;
+
+        const response = await fetch(endpoint, {
+          method: "POST",
+          body: JSON.stringify({ room }),
+        });
+
+        return await response.json();
+      }}
       throttle={16}
       resolveUsers={({ userIds }) => {
         return userIds.map(
@@ -53,7 +65,14 @@ export const Room = ({ children }: Props) => {
 
         return filteredUsers.map((user) => user.id);
       }}
-      resolveRoomsInfo={() => []}
+      resolveRoomsInfo={async ({ roomIds }) => {
+        const documents = await getDocuments(roomIds);
+
+        return documents.map((document) => ({
+          id: document.id,
+          name: document.name,
+        }));
+      }}
     >
       <RoomProvider id={params.documentId as string}>
         <ClientSideSuspense fallback={null}>{children}</ClientSideSuspense>

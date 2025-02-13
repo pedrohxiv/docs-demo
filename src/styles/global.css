@@ -261,7 +261,6 @@ body {
   display: none;
 }
 
-/* For desktop */
 .anchored-threads {
   display: block;
   max-width: 300px;
@@ -278,4 +277,8 @@ body {
   .anchored-threads {
     display: none;
   }
+}
+
+div[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
 }

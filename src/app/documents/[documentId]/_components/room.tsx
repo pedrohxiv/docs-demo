@@ -74,7 +74,10 @@ export const Room = ({ children }: Props) => {
         }));
       }}
     >
-      <RoomProvider id={params.documentId as string}>
+      <RoomProvider
+        id={params.documentId as string}
+        initialStorage={{ leftMargin: 56, rightMargin: 56 }}
+      >
         <ClientSideSuspense fallback={null}>{children}</ClientSideSuspense>
       </RoomProvider>
     </LiveblocksProvider>

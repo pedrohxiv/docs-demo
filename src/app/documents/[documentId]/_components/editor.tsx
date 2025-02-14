@@ -22,20 +22,31 @@ import ImageResize from "tiptap-extension-resize-image";
 
 import { FontSize } from "@/extensions/font-size";
 import { LineHeight } from "@/extensions/line-height";
+import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/lib/constants";
 import { useEditorStore } from "@/store/use-editor-store";
 
 import { Ruler } from "./ruler";
 import { Threads } from "./threads";
 
-export const Editor = () => {
+interface Props {
+  initialContent?: string | undefined;
+}
+
+export const Editor = ({ initialContent }: Props) => {
   const { setEditor } = useEditorStore();
 
-  const liveblocks = useLiveblocksExtension();
+  const liveblocks = useLiveblocksExtension({
+    initialContent,
+    offlineSupport_experimental: true,
+  });
 
-  const leftMargin = useStorage((root) => root.leftMargin);
-  const rightMargin = useStorage((root) => root.rightMargin);
+  const leftMargin =
+    useStorage((root) => root.leftMargin) ?? LEFT_MARGIN_DEFAULT;
+  const rightMargin =
+    useStorage((root) => root.rightMargin) ?? RIGHT_MARGIN_DEFAULT;
 
   const editor = useEditor({
+    autofocus: true,
     immediatelyRender: false,
     onCreate({ editor }) {
       setEditor(editor);
@@ -65,7 +76,7 @@ export const Editor = () => {
       attributes: {
         class:
           "focus:outline-none print:border-0 bg-white border border-[#c7c7c7] flex flex-col min-h-[1054px] w-[816px] pt-10 pr-14 pb-10 cursor-text",
-        style: `padding-left: ${leftMargin ?? 56}px; padding-right: ${rightMargin ?? 56}px;`,
+        style: `padding-left: ${leftMargin}px; padding-right: ${rightMargin}px;`,
       },
     },
     extensions: [

@@ -10,29 +10,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { api } from "@/lib/api";
+import { templates } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-
-const templates = [
-  { id: "blank", label: "Blank Document", imageUrl: "/blank-document.svg" },
-  { id: "resume", label: "Resume", imageUrl: "/resume.svg" },
-  { id: "letter", label: "Letter", imageUrl: "/letter.svg" },
-  { id: "cover-letter", label: "Cover Letter", imageUrl: "/cover-letter.svg" },
-  {
-    id: "business-letter",
-    label: "Business Letter",
-    imageUrl: "/business-letter.svg",
-  },
-  {
-    id: "project-proposal",
-    label: "Project Proposal",
-    imageUrl: "/project-proposal.svg",
-  },
-  {
-    id: "software-proposal",
-    label: "Software Development Proposal",
-    imageUrl: "/software-proposal.svg",
-  },
-];
 
 export const TemplatesGallery = () => {
   const [isCreating, setIsCreating] = useState<boolean>(false);
@@ -67,7 +46,12 @@ export const TemplatesGallery = () => {
                 >
                   <button
                     disabled={isCreating}
-                    onClick={() => handleTemplateClick(template.label, "")}
+                    onClick={() =>
+                      handleTemplateClick(
+                        template.label,
+                        template.initialContent
+                      )
+                    }
                     style={{
                       backgroundImage: `url(${template.imageUrl})`,
                       backgroundSize: "cover",
